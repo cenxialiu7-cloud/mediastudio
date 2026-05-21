@@ -1,0 +1,7 @@
+# Core ASR engine (CPU works; GPU optional)
+faster-whisper>=1.0.3
+
+# Optional: speaker diarization (--diarize). Needs HF_TOKEN env var and
+# acceptance of the pyannote model license on huggingface.co
+# pyannote.audio>=3.1
+# torch  # install the build matching your platform/CUDA from pytorch.org

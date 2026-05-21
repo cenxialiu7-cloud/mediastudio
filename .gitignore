@@ -1,0 +1,25 @@
+node_modules/
+client/dist/
+data/
+*.log
+.DS_Store
+__pycache__/
+*.pyc
+
+# Build artifacts / installers (shipped via GitHub Releases, not committed)
+dist-installer/
+*.dmg
+*.exe
+*.pkg
+*.blockmap
+
+# Local model weights / large binaries
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+
+# Local venvs / runtime
+.venv/
+venv*/
+*.local

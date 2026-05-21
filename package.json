@@ -1,0 +1,28 @@
+{
+  "name": "mediastudio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI 影音工作站 — 批次語音轉文字 / 字幕 / 影音編輯，跨平台 (Mac/Windows)，瀏覽器 UI",
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,magenta \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "cd client && npx vite --host",
+    "build": "cd client && npm install && npx vite build",
+    "start": "NODE_ENV=production node server/index.js",
+    "launch": "node launcher.mjs",
+    "setup": "npm install && cd client && npm install && cd .. && python3 -m pip install -r python/requirements.txt"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "concurrently": "^9.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.1",
+    "multer": "^2.1.1",
+    "open": "^10.1.0",
+    "uuid": "^11.0.3",
+    "ws": "^8.18.0"
+  }
+}
