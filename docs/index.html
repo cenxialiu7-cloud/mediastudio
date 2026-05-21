@@ -16,12 +16,13 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="icon.png" />
 
-  <!-- ════════════════════════════════════════════════════════════════════
-       AD NETWORK VERIFICATION + GLOBAL SCRIPT SLOT
-       Paste your Monetag / Adsterra site-verification meta tag or global
-       script here (same monetization setup as MediaGrab — see MONETIZATION.md).
-       ════════════════════════════════════════════════════════════════════ -->
-  <!-- AD_VERIFY_META_PLACEHOLDER -->
+  <!-- ─── Ad networks (shared with the 免費工具集 portal) ─── -->
+  <!-- Monetag display ad (zone 241502) -->
+  <script src="https://quge5.com/88/tag.min.js" data-zone="241502" async data-cfasync="false"></script>
+  <!-- Adsterra Social Bar -->
+  <script src="https://pl29509994.effectivecpmnetwork.com/de/3f/3a/de3f3a7824b0985a150def9d940ecd60.js"></script>
+  <!-- Adsterra Popunder -->
+  <script src="https://pl29509996.effectivecpmnetwork.com/30/f2/62/30f2621e107cd80e2e1f12d550bd84c3.js"></script>
 </head>
 <body>
   <!-- ─── Header ─── -->
@@ -66,12 +67,11 @@
     </div>
   </section>
 
-  <!-- ═══ AD ZONE #1 — Leaderboard banner (728x90) ═══ -->
+  <!-- ═══ AD ZONE #1 — Leaderboard 728x90 (iframe-isolated) ═══ -->
   <div class="ad-zone-wrap">
     <div class="ad-label">廣告 · Advertisement</div>
-    <div id="ad-zone-leaderboard" class="ad-zone ad-leaderboard">
-      <!-- AD_ZONE_LEADERBOARD_PLACEHOLDER -->
-    </div>
+    <iframe src="ads/lb728.html" width="728" height="90" scrolling="no" frameborder="0"
+            style="border:0;overflow:hidden;max-width:100%" title="ad" loading="lazy"></iframe>
   </div>
 
   <!-- ─── Features ─── -->
@@ -113,11 +113,14 @@
     </div>
   </section>
 
-  <!-- ═══ AD ZONE #2 — Rectangle (300x250) ═══ -->
+  <!-- ═══ AD ZONE #2 — Native + Rectangle 300x250 (iframe-isolated) ═══ -->
   <div class="ad-zone-wrap">
     <div class="ad-label">廣告 · Advertisement</div>
-    <div id="ad-zone-rectangle" class="ad-zone ad-rectangle">
-      <!-- AD_ZONE_RECTANGLE_PLACEHOLDER -->
+    <iframe src="ads/native.html" width="100%" height="280" scrolling="no" frameborder="0"
+            style="border:0;overflow:hidden;max-width:728px" title="ad" loading="lazy"></iframe>
+    <div style="margin-top:16px;">
+      <iframe src="ads/rect300.html" width="300" height="250" scrolling="no" frameborder="0"
+              style="border:0;overflow:hidden;max-width:100%" title="ad" loading="lazy"></iframe>
     </div>
   </div>
 
