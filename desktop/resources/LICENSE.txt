@@ -1,0 +1,19 @@
+MediaStudio Desktop
+===================
+
+本軟體為 MediaStudio 桌面版打包。包含以下開源元件：
+
+  - Electron (MIT)
+  - Node.js (MIT)
+  - Express, React, Vite, multer, @anthropic-ai/sdk 等 (各別 MIT/Apache 授權)
+  - Python 3.11 嵌入式發行版 (PSF License)
+  - faster-whisper, mlx-whisper, Coqui TTS, F5-TTS 等 (各別 MIT/Apache 授權)
+  - ffmpeg / yt-dlp / auto-editor 等命令列工具 (各別 LGPL/GPL/Unlicense 授權)
+
+聲音克隆功能僅供合法用途使用 (合理改善自己的內容)。請勿用於：
+  - 未經當事人同意冒用他人聲音
+  - 詐騙、惡作劇、政治偏執性質的造假內容
+  - 任何違反當地法律的用途
+
+By installing, you agree to use this software responsibly and within the laws
+of your jurisdiction.

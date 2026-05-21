@@ -1,0 +1,13 @@
+# Electron build tooling — generated/heavy artifacts (never committed)
+node_modules/
+app/
+ms-app/
+dist-installer/
+resources/bin/
+resources/python-embed/
+*.dmg
+*.exe
+*.pkg
+*.blockmap
+*.log
+.DS_Store

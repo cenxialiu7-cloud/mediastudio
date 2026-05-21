@@ -1,0 +1,122 @@
+{
+  "name": "mediastudio-desktop",
+  "version": "0.1.1",
+  "private": true,
+  "description": "MediaStudio Desktop — single .exe installer for Windows 10/11",
+  "author": "MediaStudio",
+  "main": "electron/main.js",
+  "scripts": {
+    "prepare-app": "node scripts/prepare-app.js",
+    "fetch-python": "node scripts/fetch-python.js",
+    "start": "electron .",
+    "fetch-ffmpeg": "node scripts/fetch-ffmpeg.js",
+    "build:win": "node scripts/prepare-app.js && node scripts/fetch-python.js && node scripts/fetch-ffmpeg.js && electron-builder --win",
+    "build:mac": "node scripts/prepare-app.js && node scripts/fetch-python.js && node scripts/fetch-ffmpeg.js && electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^31.7.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.mediastudio.desktop",
+    "productName": "MediaStudio",
+    "asar": false,
+    "files": [
+      "electron/**/*",
+      "renderer/**/*",
+      "scripts/**/*",
+      "resources/**/*",
+      "package.json",
+      "!**/.DS_Store",
+      "!**/*.log"
+    ],
+    "extraResources": [
+      {
+        "from": "ms-app",
+        "to": "ms-app",
+        "filter": [
+          "**/*",
+          "!**/.DS_Store",
+          "!**/*.log",
+          "!data/**",
+          "!client/node_modules/**",
+          "!node_modules/.cache/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.ico",
+      "artifactName": "MediaStudio-Setup-${version}.${ext}",
+      "executableName": "MediaStudio"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.video",
+      "artifactName": "MediaStudio-${version}-${arch}.${ext}",
+      "darkModeSupport": true,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null
+    },
+    "dmg": {
+      "title": "MediaStudio ${version}",
+      "icon": "resources/icon.icns",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MediaStudio",
+      "license": "resources/LICENSE.txt",
+      "language": "1028",
+      "installerLanguages": [
+        "en_US",
+        "zh_TW",
+        "zh_CN"
+      ],
+      "displayLanguageSelector": true,
+      "deleteAppDataOnUninstall": false,
+      "include": "scripts/installer.nsh"
+    },
+    "directories": {
+      "output": "dist-installer",
+      "buildResources": "resources"
+    },
+    "publish": null
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0"
+  }
+}

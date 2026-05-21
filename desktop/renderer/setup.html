@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediaStudio 安裝精靈</title>
+  <link rel="stylesheet" href="setup.css" />
+</head>
+<body>
+  <main class="wizard">
+    <header>
+      <h1>MediaStudio</h1>
+      <div class="subtitle">AI 影音工作站 — 首次設定精靈</div>
+    </header>
+
+    <section id="step-welcome" class="step active">
+      <h2>歡迎使用 MediaStudio</h2>
+      <p class="muted">這個精靈會在您的電腦設定好所需的執行環境（嵌入式 Python + 必要套件 + 選用模型）。需要的元件如下：</p>
+      <ul class="features">
+        <li>✅ <b>核心功能</b>（語音轉文字 / 字幕 / OCR / 自動剪輯）— 必裝，約 500 MB</li>
+        <li>☐ <b>語音克隆 — XTTS-v2</b>（多語言基本款）— 選用，約 2 GB</li>
+        <li>☐ <b>語音克隆 — F5-TTS</b>（相似度更佳，推薦）— 選用，約 3 GB</li>
+        <li>☐ <b>NVIDIA GPU 加速</b>（CUDA 版 PyTorch）— 自動偵測，無 GPU 略過</li>
+        <li>☐ <b>預下載所有模型</b>（~10 GB，省去日後等待）</li>
+      </ul>
+      <form id="options">
+        <label><input type="checkbox" name="installCorePackages" checked disabled /> 安裝核心 Python 套件（必裝）</label>
+        <label><input type="checkbox" name="installXtts" /> 安裝 XTTS-v2 語音克隆（~2 GB）</label>
+        <label><input type="checkbox" name="installF5tts" checked /> 安裝 F5-TTS 語音克隆（~3 GB，<b>推薦</b>）</label>
+        <label><input type="checkbox" name="installCuda" checked /> NVIDIA GPU 加速（偵測到 GPU 才會裝）</label>
+        <label><input type="checkbox" name="downloadModels" /> 順便預下載所有模型（~10 GB，30–60 分）</label>
+      </form>
+      <div class="actions">
+        <button class="btn ghost" id="btn-show-paths">顯示安裝位置</button>
+        <button class="btn primary" id="btn-start">開始安裝 →</button>
+      </div>
+      <details id="paths" hidden>
+        <summary class="muted">細節</summary>
+        <pre id="paths-pre" class="paths"></pre>
+      </details>
+    </section>
+
+    <section id="step-progress" class="step">
+      <h2 id="phase-title">準備中…</h2>
+      <div class="bar"><div id="bar-fill" class="fill"></div></div>
+      <div id="phase-msg" class="phase-msg muted"></div>
+      <h3 class="muted" style="margin-top:14px">即時日誌</h3>
+      <div id="log" class="log"></div>
+      <div class="actions">
+        <button class="btn ghost" id="btn-open-log">開啟完整 log 檔</button>
+        <button class="btn ghost" id="btn-open-userdata">開啟資料夾</button>
+      </div>
+    </section>
+
+    <section id="step-done" class="step">
+      <h2>✓ 設定完成！</h2>
+      <p class="muted">MediaStudio 已準備就緒。可以開始使用了。</p>
+      <ul class="features">
+        <li id="li-voice">🎙 啟動語音克隆服務（XTTS / F5-TTS）— 要做「聲音替換」才需要</li>
+      </ul>
+      <div class="actions">
+        <button class="btn ghost" id="btn-start-voice">啟動語音克隆服務</button>
+        <button class="btn primary" id="btn-launch">啟動 MediaStudio →</button>
+      </div>
+    </section>
+
+    <section id="step-error" class="step">
+      <h2>⚠ 安裝過程出錯</h2>
+      <p class="muted">下方是錯誤摘要。完整 log 在開啟的檔案裡，可以截圖回報。</p>
+      <pre id="error-pre" class="paths"></pre>
+      <div class="actions">
+        <button class="btn ghost" id="btn-retry">重新嘗試</button>
+        <button class="btn ghost" id="btn-open-log-err">開啟 log 檔</button>
+        <button class="btn primary" id="btn-launch-anyway">仍要進入主程式</button>
+      </div>
+    </section>
+  </main>
+  <script src="setup.js" type="module"></script>
+</body>
+</html>
