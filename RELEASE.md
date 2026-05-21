@@ -116,7 +116,41 @@ gh api -X POST repos/cenxialiu7-cloud/mediastudio/pages \
 
 ---
 
-## 7. 進階：CI 自動化（選配）
+## 7. 入口站（免費工具集）與新程式（每次都要做）
+
+入口站 repo：`cenxialiu7-cloud/cenxialiu7-cloud.github.io`（網址 https://cenxialiu7-cloud.github.io/）。
+每個程式在入口站的程式列表有一張卡片，連到各自的下載介紹頁。
+
+### 7a. MediaStudio 改版時
+- 下載頁（本 repo `docs/`）已含廣告代碼，發完 Release 會自動更新版本，**通常不必動入口站**。
+- 若改了 MediaStudio 的簡介文案，更新入口站卡片描述（見下）。
+
+### 7b. 發佈「全新程式」時（例如 MediaXxx）
+務必三件事一起做：
+
+1. **新程式的下載介紹頁**（在新程式 repo 的 `docs/`，或入口站的子資料夾）：
+   - 複製本 repo `docs/` 當範本改文案
+   - **一定要加廣告代碼**：`<head>` 放 Monetag + Adsterra 三段 script、頁面放 `ads/*.html` iframe 區塊
+   - 廣告代碼來源：直接複製 MediaStudio `docs/index.html` 的 `<head>` 廣告 script + `docs/ads/` 整個資料夾
+
+2. **入口站新增卡片**：編輯 `cenxialiu7-cloud.github.io/index.html` 的 `<div class="feature-grid">`，
+   在「更多程式」placeholder 前加一張 `<a class="app-card" href="/新程式路徑/">`（參考 MediaStudio 卡片）。
+
+3. **入口站 keywords**：把新程式名加進 `<meta name="keywords">`。
+
+```bash
+# 更新入口站
+cd /tmp && gh repo clone cenxialiu7-cloud/cenxialiu7-cloud.github.io portal && cd portal
+git config user.email "noreply@local" && git config user.name "Maintainer"
+# 編輯 index.html 加卡片…
+git add index.html && git commit -m "Add <新程式> to app grid" && git push
+```
+
+> ⚠️ 鐵則：**每個下載介紹頁都必須帶廣告代碼**（head 三段 script + ads/ iframe），否則沒有收益。
+
+---
+
+## 8. 進階：CI 自動化（選配）
 
 未來若想「打 git tag 就自動 build + 發 Release」，可加 `.github/workflows/release.yml`，
 用 `macos-latest`（build DMG）+ `windows-latest`（build exe）兩個 job，
