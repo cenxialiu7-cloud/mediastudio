@@ -105,3 +105,13 @@ a:hover { text-decoration: underline; }
   .site-header nav { gap: 14px; font-size: 0.8rem; }
   .btn { min-width: 160px; padding: 12px 20px; }
 }
+
+/* ─── Install guides (added for MediaStudio download page) ─── */
+.install-guides { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 36px; }
+.install-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; text-align: left; }
+.install-card h3 { font-size: 1.1rem; margin-bottom: 14px; }
+.install-card ol { margin: 0 0 12px 20px; }
+.install-card li { color: var(--text-dim); font-size: 0.92rem; margin-bottom: 8px; line-height: 1.5; }
+.install-card li strong { color: var(--text); }
+.install-card code { background: var(--bg-alt); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+.install-tip { color: var(--muted); font-size: 0.8rem; background: var(--bg-alt); border-radius: 8px; padding: 10px 12px; margin: 0; }
