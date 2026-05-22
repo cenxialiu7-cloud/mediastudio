@@ -88,7 +88,8 @@ export function startBuild(source, options = {}) {
   };
   trainings.set(id, t);
 
-  const proc = spawn(PYTHON_BIN, args, { cwd: ROOT, env: process.env });
+  // Force UTF-8 stdio so CJK transcript text in the dataset isn't mangled on Windows.
+  const proc = spawn(PYTHON_BIN, args, { cwd: ROOT, env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' } });
   t.proc = proc;
   let buf = '';
   let stderrTail = '';

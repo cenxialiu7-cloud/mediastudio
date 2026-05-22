@@ -22,7 +22,8 @@ export function ocrSubtitles(videoPath, outJson, opts, onProgress = () => {}) {
       '--band-bottom', String(opts.bandBottom ?? 1.0),
       '--min-duration', String(opts.minDuration ?? 0.3)
     ];
-    const child = spawn(PYTHON_BIN, args, { env: process.env });
+    // Force UTF-8 stdio so OCR'd CJK text isn't mangled by the Windows codepage.
+    const child = spawn(PYTHON_BIN, args, { env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' } });
     let buf = '';
     let result = null;
     let tail = '';

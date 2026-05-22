@@ -25,7 +25,9 @@ export function transcribe(wavPath, opts, onProgress = () => {}) {
     if (opts.language && opts.language !== 'auto') args.push('--language', opts.language);
     if (opts.diarize) args.push('--diarize');
 
-    const child = spawn(PYTHON_BIN, args, { env: process.env });
+    // Force UTF-8 stdio so CJK transcript text isn't mangled by the OS default
+    // codepage (cp950/Big5) on Windows. No-op on macOS/Linux (already UTF-8).
+    const child = spawn(PYTHON_BIN, args, { env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' } });
     let buf = '';
     let result = null;
     let stderrTail = '';

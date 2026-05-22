@@ -301,52 +301,50 @@ ipcMain.handle('setup:run', async (event, options) => {
         'opencv-python-headless', 'silero-vad', 'auto-editor', 'yt-dlp'], null, send);
     }
 
+    // --- Optional voice backends (non-fatal) ---
+    // The Windows embeddable Python has NO `venv` module, so we install voice
+    // backends DIRECTLY into the embedded interpreter (no isolated venv). Each
+    // optional step is wrapped so a failure logs a warning but never aborts the
+    // wizard — the core packages above are what the app actually needs to run.
+    async function optional(label, fn) {
+      try { await fn(); }
+      catch (e) {
+        send('日誌', `（略過 ${label}：${(e && e.message || e).toString().split('\n')[0]}）`);
+        log(`optional step "${label}" failed (non-fatal):`, e.stack || e.message);
+      }
+    }
+
     if (options.installXtts) {
-      send('安裝', '建立 XTTS venv 並安裝 Coqui TTS（~2 GB；5–10 分鐘）…');
-      await runPython(['-m', 'venv', VENV_XTTS], null, send);
-      const venvPy = path.join(VENV_XTTS, 'Scripts', 'python.exe');
-      await runProcess(venvPy, ['-m', 'pip', 'install', '--upgrade', 'pip', 'wheel'], send);
-      await runProcess(venvPy, ['-m', 'pip', 'install', 'coqui-tts', 'pypinyin', 'jieba'], send);
+      await optional('XTTS-v2 語音克隆', async () => {
+        send('安裝', '安裝 Coqui TTS（XTTS-v2，~2 GB；5–10 分鐘）…');
+        await runPython(['-m', 'pip', 'install', '--no-warn-script-location', 'coqui-tts', 'pypinyin', 'jieba'], null, send);
+      });
     }
 
     if (options.installF5tts) {
-      send('安裝', '建立 F5-TTS venv 並安裝 F5-TTS（~3 GB 含 PyTorch；10–20 分鐘）…');
-      await runPython(['-m', 'venv', VENV_F5TTS], null, send);
-      const venvPy = path.join(VENV_F5TTS, 'Scripts', 'python.exe');
-      await runProcess(venvPy, ['-m', 'pip', 'install', '--upgrade', 'pip', 'wheel'], send);
-      await runProcess(venvPy, ['-m', 'pip', 'install', 'f5-tts'], send);
+      await optional('F5-TTS 語音克隆', async () => {
+        send('安裝', '安裝 F5-TTS（~3 GB 含 PyTorch；10–20 分鐘）…');
+        await runPython(['-m', 'pip', 'install', '--no-warn-script-location', 'f5-tts'], null, send);
+      });
     }
 
     if (options.installCuda) {
-      send('安裝', '偵測 NVIDIA GPU 並安裝 CUDA 版 PyTorch …');
-      const hasNvidia = !!which('nvidia-smi');
-      if (!hasNvidia) {
-        send('日誌', '找不到 nvidia-smi，跳過 CUDA 安裝。');
-      } else {
+      await optional('CUDA PyTorch', async () => {
+        const hasNvidia = !!which('nvidia-smi');
+        if (!hasNvidia) { send('日誌', '找不到 nvidia-smi，跳過 CUDA 安裝。'); return; }
+        send('安裝', '偵測到 NVIDIA GPU，安裝 CUDA 版 PyTorch …');
         const idx = 'https://download.pytorch.org/whl/cu121';
         await runPython(['-m', 'pip', 'install', '--upgrade', '--index-url', idx, 'torch', 'torchaudio'], null, send);
-        if (options.installXtts) {
-          const py = path.join(VENV_XTTS, 'Scripts', 'python.exe');
-          if (fileExists(py)) await runProcess(py, ['-m', 'pip', 'install', '--upgrade', '--index-url', idx, 'torch', 'torchaudio'], send);
-        }
-        if (options.installF5tts) {
-          const py = path.join(VENV_F5TTS, 'Scripts', 'python.exe');
-          if (fileExists(py)) await runProcess(py, ['-m', 'pip', 'install', '--upgrade', '--index-url', idx, 'torch', 'torchaudio'], send);
-        }
-      }
+      });
     }
 
     if (options.downloadModels) {
-      send('下載', '預下載 Whisper 模型（~5 GB）— 可關掉此視窗讓它在背景跑');
-      await runPython([path.join(MS_APP_DIR, 'tools', 'download_models.py'), '--whisper'], null, send);
-      if (options.installXtts) {
-        const py = path.join(VENV_XTTS, 'Scripts', 'python.exe');
-        await runProcess(py, [path.join(MS_APP_DIR, 'tools', 'download_models.py'), '--xtts'], send, { env: { COQUI_TOS_AGREED: '1' } });
-      }
-      if (options.installF5tts) {
-        const py = path.join(VENV_F5TTS, 'Scripts', 'python.exe');
-        await runProcess(py, [path.join(MS_APP_DIR, 'tools', 'download_models.py'), '--f5tts'], send);
-      }
+      await optional('預下載模型', async () => {
+        send('下載', '預下載 Whisper 模型（~5 GB）— 可關掉此視窗讓它在背景跑');
+        await runPython([path.join(MS_APP_DIR, 'tools', 'download_models.py'), '--whisper'], null, send);
+        if (options.installXtts) await runPython([path.join(MS_APP_DIR, 'tools', 'download_models.py'), '--xtts'], { COQUI_TOS_AGREED: '1' }, send);
+        if (options.installF5tts) await runPython([path.join(MS_APP_DIR, 'tools', 'download_models.py'), '--f5tts'], null, send);
+      });
     }
 
     writeState({ setupDone: true, setupCompletedAt: Date.now() });
@@ -362,13 +360,15 @@ ipcMain.handle('setup:run', async (event, options) => {
 ipcMain.handle('voice:start', async (event) => {
   const sender = event.sender;
   const send = (msg) => sender.send('setup:progress', { phase: 'Voice', message: msg });
+  // Voice backends are installed into the embedded Python (no venv on Windows),
+  // so launch voice_server.py with PY_EXE for both.
   const recipes = [
-    ['xtts',  VENV_XTTS,  '9811', { COQUI_TOS_AGREED: '1', MEDIASTUDIO_VOICE_BACKEND: 'xtts' }],
-    ['f5tts', VENV_F5TTS, '9812', { MEDIASTUDIO_VOICE_BACKEND: 'f5tts' }],
+    ['xtts',  '9811', { COQUI_TOS_AGREED: '1', MEDIASTUDIO_VOICE_BACKEND: 'xtts' }],
+    ['f5tts', '9812', { MEDIASTUDIO_VOICE_BACKEND: 'f5tts' }],
   ];
-  for (const [key, dir, port, extraEnv] of recipes) {
-    const py = path.join(dir, 'Scripts', 'python.exe');
-    if (!fileExists(py)) { send(`(略過 ${key}: venv 不存在)`); continue; }
+  for (const [key, port, extraEnv] of recipes) {
+    const py = PY_EXE;
+    if (!fileExists(py)) { send(`(略過 ${key}: 找不到內建 Python)`); continue; }
     if (voiceProcs[key]) { send(`(${key} 已在跑)`); continue; }
     const proc = spawn(py, [path.join(MS_APP_DIR, 'python', 'voice_server.py')], {
       cwd: MS_APP_DIR,
