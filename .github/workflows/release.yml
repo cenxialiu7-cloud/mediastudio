@@ -1,0 +1,71 @@
+name: Build & Release
+
+# Push a version tag to build installers on cloud runners and attach them to
+# that tag's GitHub Release — no local Windows/Mac machine needed.
+#
+#   git tag v0.1.2 && git push origin v0.1.2
+#
+# You can also run it manually (Actions tab → Run workflow); a manual run still
+# builds and uploads the installers as workflow artifacts, but only a tag push
+# attaches them to a Release.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to create/update the Release and upload assets
+
+jobs:
+  build-mac:
+    runs-on: macos-latest        # Apple Silicon; builds both arm64 + x64 DMGs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install desktop tooling
+        working-directory: desktop
+        run: npm install --no-fund --no-audit
+      - name: Build macOS DMGs (arm64 + x64, ad-hoc signed)
+        working-directory: desktop
+        run: npm run build:mac
+      - name: Upload DMGs as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-dmg
+          path: desktop/dist-installer/*.dmg
+          if-no-files-found: error
+      - name: Attach DMGs to the Release (tag push only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop/dist-installer/*.dmg
+          fail_on_unmatched_files: true
+
+  build-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install desktop tooling
+        working-directory: desktop
+        run: npm install --no-fund --no-audit
+      - name: Build Windows installer (NSIS, bundles Python + ffmpeg)
+        working-directory: desktop
+        run: npm run build:win
+      - name: Upload installer as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-exe
+          path: desktop/dist-installer/*.exe
+          if-no-files-found: error
+      - name: Attach installer to the Release (tag push only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop/dist-installer/*.exe
+          fail_on_unmatched_files: true

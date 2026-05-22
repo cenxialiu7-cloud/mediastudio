@@ -150,9 +150,28 @@ git add index.html && git commit -m "Add <新程式> to app grid" && git push
 
 ---
 
-## 8. 進階：CI 自動化（選配）
+## 8. CI 自動化（已內建 — 推薦的發版方式）
 
-未來若想「打 git tag 就自動 build + 發 Release」，可加 `.github/workflows/release.yml`，
-用 `macos-latest`（build DMG）+ `windows-latest`（build exe）兩個 job，
-on `push: tags: ['v*']` 觸發，最後用 `softprops/action-gh-release` 上傳 assets。
-（需把 build:mac / build:win 接進 workflow；mac 雙 arch 在 Apple Silicon runner 上跑。）
+`.github/workflows/release.yml` 已設定好：**打一個版本 tag，雲端就自動 build 三個安裝檔
+（mac arm64 + mac x64 + Windows exe）並附到該 tag 的 Release**。不需自備 Windows / Mac 機器。
+
+```bash
+# 1) bump 版本（見第 1 節）並 commit、push
+git commit -am "release: v0.1.2" && git push
+
+# 2) 打 tag 觸發 CI
+git tag v0.1.2 && git push origin v0.1.2
+```
+
+接著到 GitHub → Actions 看 `Build & Release` 跑（約 10-20 分鐘）。完成後：
+- mac DMG（arm64 + x64，ad-hoc 簽章）+ Windows exe 自動出現在 `releases/tag/v0.1.2`
+- 下載頁按鈕自動指向新版本（`docs/app.js` 抓 latest release）
+
+> 手動觸發（Actions → Run workflow）也會 build，但只把安裝檔放成 workflow artifacts；
+> **只有 push tag 才會附到 Release**。
+>
+> ⚠️ 仍未簽署/公證：mac 首次右鍵→打開、Windows「其他資訊→仍要執行」。要零警告需付費憑證。
+
+### 本機手動 build（備援，CI 壞掉時用）
+mac：`cd desktop && npm run build:mac`；Windows：`desktop\build-on-windows.bat`。
+產物在 `desktop/dist-installer/`，再 `gh release upload v<ver> <檔案> --repo cenxialiu7-cloud/mediastudio`。
