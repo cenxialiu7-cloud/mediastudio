@@ -157,12 +157,17 @@ function findBootstrapPython() {
     } catch { return false; }
   };
   const candidates = [
+    // Packaged app sets PYTHON_BIN to the bundled interpreter — the embedded
+    // Python on Windows (no system Python on PATH), or system python3 on macOS.
+    // Try it first so the GPT-SoVITS installer can bootstrap without a separate
+    // Python install. (In dev this env is unset and filtered out below.)
+    process.env.PYTHON_BIN,
     ...(process.platform === 'darwin'
       ? ['/opt/homebrew/bin/python3.11', '/opt/homebrew/bin/python3.12', '/opt/homebrew/bin/python3.10',
          '/opt/homebrew/bin/python3.14', '/opt/homebrew/bin/python3.13', '/opt/homebrew/bin/python3']
       : []),
     'python3', 'python', 'python3.11', 'python3.12', 'python3.10'
-  ];
+  ].filter(Boolean);
   for (const c of candidates) {
     const p = c.includes('/') || c.includes('\\') ? tryFile(c) : tryWhich(c);
     if (p && okVer(p)) return p;
@@ -177,7 +182,11 @@ export async function install(opts = {}) {
 
   const py = findBootstrapPython();
   if (!py) {
-    const e = '找不到 Python (>=3.8)。macOS 請執行 `brew install python@3.11` 後重試。';
+    const e = process.platform === 'win32'
+      ? '找不到可用的 Python。請重新安裝 MediaStudio（安裝檔已內建 Python），或安裝 Python 3.11 (python.org) 後重試。'
+      : process.platform === 'darwin'
+        ? '找不到 Python (>=3.8)。請執行 `brew install python@3.11` 後重試。'
+        : '找不到 Python (>=3.8)。請用系統套件管理器安裝 Python 3.11 後重試。';
     emit('install', 'error', 0, e); throw new Error(e);
   }
   const args = [INSTALL_SCRIPT,
