@@ -77,7 +77,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "MediaStudio ${version}",
+      "title": "MediaStudio ${version} ${arch}",
       "icon": "resources/icon.icns",
       "background": "resources/dmg-background.png",
       "window": {
