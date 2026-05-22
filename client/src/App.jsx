@@ -79,10 +79,16 @@ export default function App() {
         }
       }
     });
-    // Onboarding "開啟訓練聲音" deep-link
+    // Deep-links from other panels (onboarding / voicefix / training chip)
     const openVT = () => { setShowVoiceTrain(true); setVoiceTrainEverOpened(true); };
+    const openSettings = () => setShowSettings(true);
     window.addEventListener('ms-open-voice-train', openVT);
-    return () => { ws.close(); window.removeEventListener('ms-open-voice-train', openVT); };
+    window.addEventListener('ms-open-settings', openSettings);
+    return () => {
+      ws.close();
+      window.removeEventListener('ms-open-voice-train', openVT);
+      window.removeEventListener('ms-open-settings', openSettings);
+    };
   }, [refresh]);
 
   function acceptFiles(list) {

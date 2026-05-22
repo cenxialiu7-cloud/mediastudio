@@ -225,8 +225,9 @@ function InstallChip({ gps, gpsOp, onInstall, onStartWebui }) {
                 </div>
               )}
               {!installing && (
-                <button className="primary" style={{ marginTop: 8, width: '100%' }} onClick={() => { onInstall(); setOpen(false); }}>
-                  🚀 立即安裝
+                <button className="primary" style={{ marginTop: 8, width: '100%' }}
+                  onClick={() => { onInstall(); setOpen(false); window.dispatchEvent(new CustomEvent('ms-open-settings')); }}>
+                  🚀 立即安裝（在「設定 → 功能與模組」看進度）
                 </button>
               )}
             </>

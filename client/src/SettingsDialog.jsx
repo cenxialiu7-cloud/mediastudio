@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from './api.js';
+import ModuleManager from './ModuleManager.jsx';
 
 export default function SettingsDialog({ onClose }) {
   const [s, setS] = useState(null);
@@ -47,6 +48,11 @@ export default function SettingsDialog({ onClose }) {
           <button onClick={onClose}>關閉</button>
         </div>
         {err && <div className="banner err">{err}</div>}
+
+        {/* Module install center — the main reason newbies open Settings */}
+        <ModuleManager />
+        <hr style={{ border: 0, borderTop: '1px solid var(--line)', margin: '18px 0' }} />
+
         {!s && !err && <p className="muted">載入中…</p>}
         {s && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

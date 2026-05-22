@@ -355,6 +355,12 @@ export default function TranscriptEditor({ jobId, onClose, ops, artifacts, featu
                   <div className="voicefix">
                     <div className="muted" style={{ marginBottom: 6 }}>
                       <b>口誤修正</b>：輸入修正後的文字 → 用本機語音克隆服務（XTTS / F5-TTS）自動生成 → 拼回影片。也可手動填 wav 路徑。
+                      <button
+                        onClick={() => window.dispatchEvent(new CustomEvent('ms-open-settings'))}
+                        style={{ marginLeft: 8, fontSize: 11, padding: '2px 8px' }}
+                        title="若出現「相依模組未安裝」，到設定的「功能與模組」一鍵安裝並查看進度">
+                        🔧 安裝/管理語音模組
+                      </button>
                     </div>
                     <div className="vf-row">
                       <span className="muted" style={{ fontSize: 11 }}>後端：</span>
