@@ -23,30 +23,38 @@ That is the entire prerequisite. No Python, no Visual Studio, no admin rights.
 
 ## Build steps
 
-1. Copy this whole folder (`MediaStudio-Electron`) and the sibling folder
-   (`MediaStudio-Windows`) onto the Windows machine. Keep them side-by-side:
+This tooling lives **inside the MediaStudio repo** at `desktop\`. The app source
+is the repo root (one level up) — no separate source folder is needed.
 
-   ```
-   YourDesktop\
-   ├── MediaStudio-Electron\      ← this folder (the build tools)
-   └── MediaStudio-Windows\       ← the actual MediaStudio source
-   ```
+```
+mediastudio\                  ← the repo (clone from GitHub)
+├── server\  client\  python\ …   ← the app source
+└── desktop\                  ← THIS folder (the Windows build tools)
+```
 
-2. **Double-click `build-on-windows.bat`** inside `MediaStudio-Electron\`.
+1. Clone the repo onto a Windows 10/11 machine and open `desktop\`.
 
-   It will:
-   1. `npm install`            (electron + electron-builder)
-   2. `npm run prepare-app`    (copies MediaStudio source, npm install, vite build)
-   3. `npm run fetch-python`   (downloads ~10 MB Python 3.11 embeddable)
-   4. `electron-builder --win` (~5–10 minutes; produces NSIS installer)
+2. **Double-click `build-on-windows.bat`**.
+
+   It runs `npm install` then `npm run build:win`, which chains:
+   1. `prepare-app`   — stages the repo root into `ms-app\`, npm install, vite build
+   2. `fetch-python`  — downloads the ~10 MB Python 3.11 embeddable
+   3. `fetch-ffmpeg`  — bundles static ffmpeg + ffprobe (so users need not install them)
+   4. `electron-builder --win` (~5–10 minutes; produces the NSIS installer)
 
 3. When it finishes, your installer is at:
 
    ```
-   MediaStudio-Electron\dist-installer\MediaStudio-Setup-0.1.0.exe
+   desktop\dist-installer\MediaStudio-Setup-<version>.exe
    ```
 
-   That single `.exe` is everything an end user needs. **Email / share / upload that.**
+   That single `.exe` is everything an end user needs. **Share / upload that** —
+   or attach it to the GitHub Release per `../RELEASE.md`.
+
+> **SmartScreen note (unsigned):** the `.exe` is not code-signed (free build), so
+> first launch shows a blue "Windows protected your PC" screen. Users click
+> **More info → Run anyway**. This is documented on the download page's install
+> guide. To remove the warning entirely you'd need a paid code-signing cert.
 
 ---
 
