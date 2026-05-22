@@ -1,6 +1,6 @@
 {
   "name": "mediastudio",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "type": "module",
   "description": "AI 影音工作站 — 批次語音轉文字 / 字幕 / 影音編輯，跨平台 (Mac/Windows)，瀏覽器 UI",
