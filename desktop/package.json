@@ -21,6 +21,7 @@
     "appId": "com.mediastudio.desktop",
     "productName": "MediaStudio",
     "asar": false,
+    "afterPack": "scripts/afterPack.cjs",
     "files": [
       "electron/**/*",
       "renderer/**/*",
@@ -78,14 +79,21 @@
     "dmg": {
       "title": "MediaStudio ${version}",
       "icon": "resources/icon.icns",
+      "background": "resources/dmg-background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "iconSize": 110,
       "contents": [
         {
-          "x": 130,
-          "y": 220
+          "x": 140,
+          "y": 200,
+          "type": "file"
         },
         {
-          "x": 410,
-          "y": 220,
+          "x": 400,
+          "y": 200,
           "type": "link",
           "path": "/Applications"
         }
