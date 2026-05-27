@@ -1,5 +1,11 @@
 # MediaStudio — AI 影音工作站
 
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/yoyoisgood)
+
+> 喜歡這個工具？☕ [請我喝杯咖啡支持持續開發 · Support on Ko-fi](https://ko-fi.com/yoyoisgood)
+
+---
+
 跨平台（macOS / Windows）影音處理程式，UI 用瀏覽器開啟。功能：
 
 - **批次語音轉文字 / 字幕**：一次丟多個影音檔或網址，批次輸出字幕與逐字稿。
@@ -143,3 +149,13 @@ npm run launch                      # 等同雙擊啟動器
 - 把上述功能各包成 MCP 工具，讓內建 AI 助手直接驅動
 - Tauri/Electron 桌面外殼、`pkg` 單檔執行檔
 - 字級時間戳 + WhisperX 強制對齊（已在 transcribe.py 開 `word_timestamps`，下一步在 UI 做卡拉OK逐字字幕）
+
+---
+
+## ☕ Support / 支持作者
+
+MediaStudio 是免費、開源、零功能限制的工具。如果它幫到你，歡迎透過 Ko-fi 請我喝杯咖啡：
+
+**👉 https://ko-fi.com/yoyoisgood**
+
+[![Buy Me a Coffee at ko-fi.com](https://storage.ko-fi.com/cdn/kofi2.png?v=6)](https://ko-fi.com/yoyoisgood)
