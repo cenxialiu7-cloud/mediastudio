@@ -23,3 +23,8 @@ dist-installer/
 .venv/
 venv*/
 *.local
+
+# 安全硬化
+.env
+.env.*
+!.env.example

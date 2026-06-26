@@ -17,7 +17,7 @@ Local stdio MCP server. Lets Claude Code or Cowork (Claude for Mac) drive MediaS
 ## Install — Claude Code
 
 ```bash
-claude mcp add mediastudio -- node "/Users/yoyo/Claude Code/MediaStudio/mcp/server.js"
+claude mcp add mediastudio -- node "$HOME/Claude Code/MediaStudio/mcp/server.js"
 ```
 
 Then in any Claude Code session, `/mcp` will show `mediastudio` and its 7 tools.
@@ -31,7 +31,7 @@ Cowork settings → **MCP servers** → Add, or edit `~/Library/Application Supp
   "mcpServers": {
     "mediastudio": {
       "command": "node",
-      "args": ["/Users/yoyo/Claude Code/MediaStudio/mcp/server.js"]
+      "args": ["$HOME/Claude Code/MediaStudio/mcp/server.js"]
     }
   }
 }
